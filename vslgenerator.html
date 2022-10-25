@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.10.0/dist/pptxgen.bundle.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Roboto:wght@100&display=swap" rel="stylesheet">
+        <script>
+
+            const makecontentarray = (content) =>{
+                const text = content.value
+
+                let lines = text.split("\n") 
+
+                lines = lines.filter(x => x != "")
+                return lines
+            } 
+
+            const generatepower = () => {
+                const form = document.getElementById("form")
+                const {fontsize, fontcolor, bgcolor, content, screensize} = form
+                
+                linhas = makecontentarray(content)
+
+                pptx = new PptxGenJS();
+                console.log(screensize.value)
+                pptx.layout = screensize.value == '16_9' ?  "LAYOUT_16x9" : "LAYOUT_4x3"
+
+                console.log(fontsize, fontcolor, bgcolor)
+                linhas.forEach(linha => {
+                    console.log(linha)
+                    pptx.addSlide().addText(linha, {
+                        color: fontcolor.value,
+                        fill: { color: bgcolor.value },
+                        align: pptx.AlignH.center,
+                        fontSize: fontsize.value,
+                        w:'100%',
+                        h:'100%',
+                        fontFace: 'Arial',
+                        margin: 50
+                    } );
+                
+                })
+                    
+                console.log(pptx)    
+                pptx.writeFile()           
+            }
+
+        </script> 
+        <style>
+            body{
+                display: flex;
+                justify-content: center;
+                font-family: 'Open Sans';
+                background-color: #000;
+            }
+            #form{
+                width: 65vw;
+                max-width: 700px;
+                background-color: #fff;
+                padding: 25px;
+                border-radius: 12px;
+            }       
+            .form-control{
+                
+            }
+            h1{
+                text-align: center;
+                font-family: 'Open Sans';
+                color: white;
+            }
+            textarea{
+                font-family: 'Open Sans';
+                font-size: 14px;
+                width: 100%;
+                margin-bottom: 20px;
+            }   
+            .col-sm-12{
+                display: flex;
+                justify-content: space-between;
+            }
+            .col-sm-3{
+                display: flex;
+                justify-content: center;
+                margin-top: 30px;
+            } 
+            button{
+                font-size: 24px;
+                font-weight: bold;
+                padding: 10px 30px;
+            }
+
+        </style>
+    </head>
+<body>
+    <div>
+        <h1>Gerador de VSL</h1>
+        <form id="form">
+            <div class="form-group">
+                <textarea class="form-control" name="content" rows="15" required>Gerador de VSL: 1 Parágrafo = 1 Slide. Simples assim. </textarea>
+            </div>
+            <div class="row col-sm-12">
+                <div class="form-group col-sm-2">
+                    <label for="screensize">Formato dos Slides:</label>
+                    <select class="form-control" id="screensize" name="screensize">
+                    <option value="16_9" selected>16:9</option> 
+                    <option value="4_3" >4:3</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label for="fontcolor">Cor do Texto:</label><br/>
+                    <input class="form-control" type="color" id="fontcolor" name="fontcolor" value="#000000">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label for="brcolor">Cor de Fundo:</label><br/>
+                    <input type="color" class="form-control" id="bgcolor" name="bgcolor" value="#FFFFFF">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label for="fontsize">Tamanho da Fonte:</label>
+                    <input class="form-control" type="text" id="fontsize" name="fontsize" value="40" onkeypress="return isNumberKey(event)"  maxlength="2" size="2" required> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-3">
+                    <button class="btn btn-primary btn-lg" type="button" onclick="generatepower()">Gerar VSL</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</body>
+</html>
